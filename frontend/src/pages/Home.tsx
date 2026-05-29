@@ -70,6 +70,48 @@ export function Home() {
         </Card>
       ) : null}
 
+            {wallet.error ? (
+        <Card className="border border-rose-500/30 bg-rose-500/8 text-rose-100">
+          {wallet.error}
+        </Card>
+      ) : null}
+
+      {!wallet.isCorrectNetwork && wallet.isFreighterInstalled ? (
+        <Card
+          aria-live="polite"
+          className="border border-amber-400/50 bg-amber-400/12 text-amber-50 shadow-[0_0_0_1px_rgba(251,191,36,0.2)]"
+          role="alert"
+        >
+          <div className="space-y-4">
+            <div className="inline-flex items-center rounded-full border border-amber-300/30 bg-amber-300/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-amber-200">
+              Network warning
+            </div>
+            <div className="text-lg font-semibold text-white">Switch Freighter to Stellar Testnet</div>
+            <p className="text-sm leading-7 text-amber-100/90">
+              Your wallet is currently connected to <span className="font-semibold text-white">{wallet.networkLabel}</span>.
+              Open Freighter, change the active network to Stellar Testnet, then refresh or reconnect.
+            </p>
+            <div className="flex flex-wrap gap-3">
+              <button
+                className="inline-flex items-center rounded-xl bg-[var(--secondary)] px-4 py-2 text-sm font-semibold text-[var(--on-secondary)]"
+                onClick={() => void wallet.refresh()}
+                type="button"
+              >
+                Recheck Network
+              </button>
+              <a
+                className="inline-flex items-center rounded-xl border border-white/15 px-4 py-2 text-sm font-semibold text-white"
+                href={STELLAR_FRIENDBOT_URL}
+                rel="noreferrer"
+                target="_blank"
+              >
+                Fund Testnet Wallet
+              </a>
+            </div>
+          </div>
+        </Card>
+      ) : null}
+
       <section className="relative overflow-hidden rounded-[36px] border border-white/6 px-6 py-10 md:px-10 md:py-14">
         <div className="grid-hero absolute inset-0 opacity-60" />
         <div className="absolute inset-0 bg-gradient-to-r from-[rgba(77,142,255,0.12)] via-transparent to-[rgba(78,222,163,0.08)]" />
@@ -128,40 +170,7 @@ export function Home() {
         </div>
       </section>
 
-      {!wallet.isCorrectNetwork && wallet.isFreighterInstalled ? (
-        <Card className="border border-amber-500/30 bg-amber-500/8 text-amber-100">
-          <div className="space-y-3">
-            <div className="text-lg font-semibold text-white">Switch Freighter to Stellar Testnet</div>
-            <p className="text-sm leading-7 text-amber-100/90">
-              Your wallet is currently connected to <span className="font-semibold text-white">{wallet.networkLabel}</span>.
-              Open Freighter, change the active network to Stellar Testnet, then refresh or reconnect.
-            </p>
-            <div className="flex flex-wrap gap-3">
-              <button
-                className="inline-flex items-center rounded-xl bg-[var(--secondary)] px-4 py-2 text-sm font-semibold text-[var(--on-secondary)]"
-                onClick={() => void wallet.refresh()}
-                type="button"
-              >
-                Recheck Network
-              </button>
-              <a
-                className="inline-flex items-center rounded-xl border border-white/15 px-4 py-2 text-sm font-semibold text-white"
-                href={STELLAR_FRIENDBOT_URL}
-                rel="noreferrer"
-                target="_blank"
-              >
-                Fund Testnet Wallet
-              </a>
-            </div>
-          </div>
-        </Card>
-      ) : null}
 
-      {wallet.error ? (
-        <Card className="border border-rose-500/30 bg-rose-500/8 text-rose-100">
-          {wallet.error}
-        </Card>
-      ) : null}
 
       <section className="space-y-5">
         <div className="flex items-end justify-between gap-4">

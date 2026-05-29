@@ -57,10 +57,10 @@ export function ResolveDisputeModal({
 
   return (
     <Modal
-      description="Validate the settlement path before submitting the admin transaction."
+      description="Choose how to resolve this case and where the protected payment should go."
       onClose={onClose}
       open={open}
-      title={auction ? `Resolve Auction #${auction.auction_id.toString()}` : 'Resolve dispute'}
+      title={auction ? `Review Auction #${auction.auction_id.toString()}` : 'Review issue'}
     >
       <form
         className="space-y-4"
@@ -74,7 +74,7 @@ export function ResolveDisputeModal({
             (sellerAmount ?? 0n) + (buyerAmount ?? 0n) !== auction.highest_bid
           ) {
             form.setError('sellerAmount', {
-              message: 'Split amounts must equal the winning bid.',
+              message: 'Split amounts must equal the protected payment total.',
             })
             return
           }
@@ -84,7 +84,7 @@ export function ResolveDisputeModal({
         })}
       >
         <SelectField
-          label="Resolution"
+          label="Decision"
           {...form.register('decision')}
         >
           {DISPUTE_DECISIONS.map((option) => (
@@ -114,7 +114,7 @@ export function ResolveDisputeModal({
             Cancel
           </Button>
           <Button isLoading={isLoading} type="submit">
-            Confirm resolution
+            Confirm Decision
           </Button>
         </div>
       </form>

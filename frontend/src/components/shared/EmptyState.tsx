@@ -9,7 +9,7 @@ export function EmptyState({
   description: string
 }) {
   return (
-    <Card className="flex min-h-56 flex-col items-center justify-center gap-4 text-center">
+    <Card className="flex min-h-56 flex-col items-center justify-center gap-4 text-center" tone="primary">
       <div className="rounded-full bg-white/6 p-4 text-[var(--primary)]">
         <Inbox className="h-8 w-8" />
       </div>

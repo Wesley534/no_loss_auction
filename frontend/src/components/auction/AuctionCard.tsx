@@ -7,9 +7,21 @@ import { AuctionImage } from '../shared/AuctionImage'
 import { Card } from '../shared/Card'
 import { StatusBadge } from './StatusBadge'
 
+const CARD_TONES: Record<string, 'primary' | 'secondary' | 'tertiary' | 'danger' | 'neutral'> = {
+  Active: 'primary',
+  AwaitingConfirmation: 'tertiary',
+  Disputed: 'danger',
+  Completed: 'secondary',
+  Resolved: 'secondary',
+  Cancelled: 'neutral',
+}
+
 export function AuctionCard({ auction }: { auction: AuctionView }) {
   return (
-    <Card className="group flex h-full flex-col gap-5 transition duration-300 hover:-translate-y-1 hover:border-white/12">
+    <Card
+      className="group flex h-full flex-col gap-5 transition duration-300 hover:-translate-y-1 hover:border-white/12"
+      tone={CARD_TONES[auction.statusLabel] ?? 'primary'}
+    >
       <div className="relative aspect-[16/10] overflow-hidden rounded-[24px] border border-white/8 bg-white/5">
         <AuctionImage
           alt={auction.title}
@@ -34,15 +46,15 @@ export function AuctionCard({ auction }: { auction: AuctionView }) {
       <p className="line-clamp-3 text-sm text-[var(--text-muted)]">{auction.description}</p>
 
       <div className="grid grid-cols-2 gap-3 text-sm">
-        <div className="rounded-2xl bg-white/5 p-3">
+        <div className="rounded-2xl bg-[rgba(173,198,255,0.08)] p-3 ring-1 ring-[rgba(173,198,255,0.1)]">
           <div className="mb-1 text-[11px] uppercase tracking-[0.2em] text-[var(--text-faint)]">
             Highest Bid
           </div>
           <div className="mono font-semibold text-white">{formatToken(auction.highest_bid)}</div>
         </div>
-        <div className="rounded-2xl bg-white/5 p-3">
+        <div className="rounded-2xl bg-[rgba(78,222,163,0.08)] p-3 ring-1 ring-[rgba(78,222,163,0.1)]">
           <div className="mb-1 text-[11px] uppercase tracking-[0.2em] text-[var(--text-faint)]">
-            APR
+            Seller Earnings Rate
           </div>
           <div className="font-semibold text-white">{formatAPR(auction.apr_bps)}</div>
         </div>
@@ -51,11 +63,11 @@ export function AuctionCard({ auction }: { auction: AuctionView }) {
       <div className="space-y-2 text-sm text-[var(--text-muted)]">
         <div className="flex items-center gap-2">
           <Gavel className="h-4 w-4 text-[var(--secondary)]" />
-          Seller {formatAddress(auction.seller)}
+          Seller: {formatAddress(auction.seller)}
         </div>
         <div className="flex items-center gap-2">
           <Clock3 className="h-4 w-4 text-[var(--tertiary)]" />
-          {formatCountdown(auction.auction_end_time)}
+          Time left: {formatCountdown(auction.auction_end_time)}
         </div>
       </div>
 
@@ -63,7 +75,7 @@ export function AuctionCard({ auction }: { auction: AuctionView }) {
         className="mt-auto inline-flex items-center gap-2 text-sm font-semibold text-[var(--primary)] transition group-hover:gap-3"
         to={`/auction/${auction.auction_id.toString()}`}
       >
-        View auction
+        View details
         <ArrowRight className="h-4 w-4" />
       </Link>
     </Card>

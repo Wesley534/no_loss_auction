@@ -7,7 +7,7 @@ import { Card } from '../shared/Card'
 import { Textarea } from '../shared/Input'
 
 const disputeSchema = z.object({
-  reason: z.string().min(3, 'Explain the dispute'),
+  reason: z.string().min(3, 'Tell us what went wrong'),
 })
 
 type DisputeValues = z.infer<typeof disputeSchema>
@@ -27,18 +27,19 @@ export function DisputeForm({
   })
 
   return (
-    <Card className="space-y-4">
+    <Card className="space-y-4" tone="danger">
       <div>
-        <h3 className="text-xl font-semibold text-white">Raise a dispute</h3>
+        <h3 className="text-xl font-semibold text-white">Report an issue</h3>
         <p className="mt-1 text-sm text-[var(--text-muted)]">
-          If delivery went wrong, submit a reason and upload supporting evidence for admin review.
+          If something went wrong with the order, explain what happened and upload a photo for
+          review.
         </p>
       </div>
       <form
         className="space-y-4"
         onSubmit={form.handleSubmit(async (values) => {
           if (!imageFile) {
-            setImageError('Upload an evidence image before submitting the dispute.')
+            setImageError('Upload a supporting photo before sending your report.')
             return
           }
 
@@ -50,11 +51,11 @@ export function DisputeForm({
       >
         <Textarea
           error={form.formState.errors.reason?.message}
-          label="Reason"
+          label="What happened?"
           {...form.register('reason')}
         />
         <label className="flex flex-col gap-2">
-          <span className="text-sm font-medium text-[var(--text-muted)]">Evidence image</span>
+          <span className="text-sm font-medium text-[var(--text-muted)]">Supporting photo</span>
           <input
             accept="image/*"
             className="rounded-2xl border border-dashed border-white/15 bg-white/5 px-4 py-3 text-sm text-[var(--text)]"
@@ -68,12 +69,12 @@ export function DisputeForm({
           {imageError ? <span className="text-sm text-[var(--danger)]">{imageError}</span> : null}
           {!imageError ? (
             <span className="text-xs text-[var(--text-faint)]">
-              The evidence image will be uploaded to IPFS when you submit.
+              Your photo will be uploaded securely when you send the report.
             </span>
           ) : null}
         </label>
         <Button fullWidth isLoading={isLoading} type="submit" variant="danger">
-          Submit dispute
+          Submit Report
         </Button>
       </form>
     </Card>

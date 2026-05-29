@@ -13,12 +13,12 @@ export function DisputeTable({
   onResolve: (auction: AuctionView) => void
 }) {
   return (
-    <Card className="overflow-hidden p-0">
+    <Card className="overflow-hidden p-0" tone="danger">
       <div className="flex items-center justify-between border-b border-white/8 px-6 py-5">
         <div>
-          <h2 className="text-2xl font-semibold text-white">Dispute queue</h2>
+          <h2 className="text-2xl font-semibold text-white">Resolution Center</h2>
           <p className="mt-1 text-sm text-[var(--text-muted)]">
-            Resolve challenged settlements with seller release, buyer refund, or custom split.
+            Review buyer issues and decide whether to pay the seller, refund the buyer, or split the payment.
           </p>
         </div>
       </div>
@@ -27,8 +27,8 @@ export function DisputeTable({
           <thead className="bg-white/4 text-[11px] uppercase tracking-[0.24em] text-[var(--text-faint)]">
             <tr>
               <th className="px-6 py-4">Auction</th>
-              <th className="px-6 py-4">Seller / Winner</th>
-              <th className="px-6 py-4">Highest bid</th>
+              <th className="px-6 py-4">Seller / Buyer</th>
+              <th className="px-6 py-4">Protected payment</th>
               <th className="px-6 py-4">Status</th>
               <th className="px-6 py-4 text-right">Action</th>
             </tr>
@@ -45,7 +45,7 @@ export function DisputeTable({
                 <td className="px-6 py-5">
                   <div className="text-white">{formatAddress(auction.seller)}</div>
                   <div className="text-xs text-[var(--text-faint)]">
-                    vs {formatAddress(auction.winner ?? undefined)}
+                    Buyer: {formatAddress(auction.winner ?? undefined)}
                   </div>
                 </td>
                 <td className="px-6 py-5 text-white">{formatToken(auction.highest_bid)}</td>
@@ -56,7 +56,7 @@ export function DisputeTable({
                   />
                 </td>
                 <td className="px-6 py-5 text-right">
-                  <Button onClick={() => onResolve(auction)}>Resolve</Button>
+                  <Button onClick={() => onResolve(auction)}>Review</Button>
                 </td>
               </tr>
             ))}

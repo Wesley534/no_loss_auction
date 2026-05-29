@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { AdminStats } from '../components/admin/AdminStats'
 import { DisputeTable } from '../components/admin/DisputeTable'
 import { ResolveDisputeModal } from '../components/admin/ResolveDisputeModal'
+import { Card } from '../components/shared/Card'
 import { EmptyState } from '../components/shared/EmptyState'
 import { Loader } from '../components/shared/Loader'
 import { useAuctions, type AuctionView } from '../hooks/useAuctions'
@@ -29,8 +30,8 @@ export function AdminDashboard() {
   if (!wallet.isAdmin) {
     return (
       <EmptyState
-        description="Only the configured admin wallet can access protocol oversight."
-        title="Admin access required"
+        description="Only the marketplace team wallet can access insights, payments, and issue reviews."
+        title="Marketplace access required"
       />
     )
   }
@@ -39,9 +40,9 @@ export function AdminDashboard() {
     <div className="space-y-8">
       <header className="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div>
-          <h1 className="mb-2 text-4xl font-semibold text-white">Protocol Oversight</h1>
+          <h1 className="mb-2 text-4xl font-semibold text-white">Marketplace insights</h1>
           <p className="text-lg text-[var(--text-muted)]">
-            Real-time governance and performance monitoring for the No-Loss Yield network.
+            Monitor marketplace activity, add reserve funds, and review buyer-reported issues.
           </p>
         </div>
         <button
@@ -51,8 +52,8 @@ export function AdminDashboard() {
               .execute(
                 () => auctionContract.fundYieldReserve(wallet.address!, wallet.address!, 100_000_000n),
                 {
-                  pending: 'Funding yield reserve...',
-                  success: 'Added 10 mUSDC to the yield reserve.',
+                  pending: 'Adding funds to the marketplace reserve...',
+                  success: 'Added 10 mUSDC to the marketplace reserve.',
                 },
               )
               .then(() => {
@@ -62,26 +63,26 @@ export function AdminDashboard() {
           }
           type="button"
         >
-          Launch New Auction
+          Add Platform Funds
         </button>
       </header>
 
-      {isLoading ? <Loader label="Loading protocol metrics..." /> : <AdminStats stats={stats} />}
+      {isLoading ? <Loader label="Loading marketplace insights..." /> : <AdminStats stats={stats} />}
 
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
         <section className="xl:col-span-2">
           {isLoading ? (
-            <Loader label="Loading disputes..." />
+            <Loader label="Loading reported issues..." />
           ) : (
             <DisputeTable disputes={disputes} onResolve={setSelectedAuction} />
           )}
         </section>
-        <section className="glass-panel rounded-xl p-4 shadow-lg">
-          <h3 className="mb-4 text-2xl font-semibold text-white">Yield Accrual Rates</h3>
+        <Card tone="secondary" className="rounded-xl p-4">
+          <h3 className="mb-4 text-2xl font-semibold text-white">Marketplace reserve</h3>
           <div className="space-y-6">
             <div>
               <div className="mb-2 flex justify-between">
-                <span className="text-xs uppercase text-[var(--text-muted)]">Current Reserve</span>
+                <span className="text-xs uppercase text-[var(--text-muted)]">Available reserve</span>
                 <span className="mono text-sm text-[var(--secondary)]">{formatToken(token.balance)}</span>
               </div>
               <div className="h-2 w-full overflow-hidden rounded-full bg-[var(--surface-container-highest)]">
@@ -93,11 +94,11 @@ export function AdminDashboard() {
             </div>
             <div className="rounded-xl border border-[rgba(66,71,84,0.1)] bg-[var(--surface-container-high)] p-4">
               <div className="mb-3 flex items-center gap-2 text-sm text-white">
-                <span>Network Efficiency</span>
+                <span>Reserve health</span>
               </div>
               <p className="mb-3 text-xs leading-6 text-[var(--text-muted)]">
-                Yield accrues lazily and can be very small over short intervals, so admin metrics
-                use higher precision than the public auction views.
+                This view tracks how much reserve coverage is available while auctions stay active
+                and payments remain protected.
               </p>
               <div className="relative h-32 w-full">
                 <svg className="h-full w-full" preserveAspectRatio="none" viewBox="0 0 100 40">
@@ -119,13 +120,13 @@ export function AdminDashboard() {
                   />
                 </svg>
                 <div className="absolute right-0 top-0 mono text-sm text-[var(--text-muted)]">
-                  Optimum
+                  Healthy
                 </div>
               </div>
             </div>
             <div className="flex items-center justify-between">
               <div className="flex flex-col">
-                <span className="text-xs text-[var(--text-muted)]">Global Multiplier</span>
+                <span className="text-xs text-[var(--text-muted)]">Reserve multiplier</span>
                 <span className="mono text-2xl text-white">x{stats.totalAccruedYield > 0n ? '1.04' : '1.00'}</span>
               </div>
               <button
@@ -133,16 +134,16 @@ export function AdminDashboard() {
                 onClick={() => void refresh()}
                 type="button"
               >
-                Adjust Rate
+                Refresh View
               </button>
             </div>
           </div>
-        </section>
+        </Card>
       </div>
 
-      <section className="glass-panel overflow-hidden rounded-xl shadow-lg">
+      <Card tone="primary" className="overflow-hidden rounded-xl p-0">
         <div className="border-b border-[rgba(66,71,84,0.1)] p-4">
-          <h3 className="text-2xl font-semibold text-white">Protocol Activity Log</h3>
+          <h3 className="text-2xl font-semibold text-white">Marketplace activity</h3>
         </div>
         <div className="divide-y divide-[rgba(66,71,84,0.1)]">
           {recentActivity.map((auction) => (
@@ -159,7 +160,7 @@ export function AdminDashboard() {
                     Auction #{auction.auction_id.toString()} {getAuctionStatusText(auction, 'admin')}
                   </h4>
                   <p className="text-xs text-[var(--text-muted)]">
-                    Winner: {formatAddress(auction.winner ?? auction.highest_bidder ?? undefined)} | Payout:{' '}
+                    Buyer: {formatAddress(auction.winner ?? auction.highest_bidder ?? undefined)} | Payment:{' '}
                     {formatToken(auction.highest_bid)}
                   </p>
                 </div>
@@ -169,13 +170,13 @@ export function AdminDashboard() {
                   {getAuctionStatusText(auction, 'admin')}
                 </span>
                 <Link className="text-[var(--text-muted)] hover:text-white" to={`/auction/${auction.auction_id.toString()}`}>
-                  Open
+                  View
                 </Link>
               </div>
             </div>
           ))}
         </div>
-      </section>
+      </Card>
 
       <ResolveDisputeModal
         auction={selectedAuction}
@@ -194,8 +195,8 @@ export function AdminDashboard() {
                 buyerAmount,
               ),
             {
-              pending: 'Resolving dispute...',
-              success: 'Dispute resolved successfully.',
+              pending: 'Resolving the reported issue...',
+              success: 'The issue has been resolved.',
             },
           )
           await refresh()

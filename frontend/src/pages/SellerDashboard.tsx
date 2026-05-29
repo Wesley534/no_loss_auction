@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { EmptyState } from '../components/shared/EmptyState'
+import { Card } from '../components/shared/Card'
 import { Loader } from '../components/shared/Loader'
 import { useAuctions } from '../hooks/useAuctions'
 import { useTransaction } from '../hooks/useTransaction'
@@ -9,13 +10,13 @@ import { auctionContract } from '../lib/contract'
 import { formatAddress, formatCountdown, formatToken } from '../lib/format'
 import { getAuctionStatusText } from '../lib/status'
 
-const FILTERS = ['All Items', 'Sold', 'Expired'] as const
+const FILTERS = ['All Listings', 'Sold', 'Ended'] as const
 
 export function SellerDashboard() {
   const wallet = useWallet()
   const { auctions, isLoading, refresh } = useAuctions()
   const transaction = useTransaction()
-  const [filter, setFilter] = useState<(typeof FILTERS)[number]>('All Items')
+  const [filter, setFilter] = useState<(typeof FILTERS)[number]>('All Listings')
 
   const visibleAuctions = useMemo(() => {
     const scoped = wallet.isAdmin
@@ -26,7 +27,7 @@ export function SellerDashboard() {
       return scoped.filter((auction) => ['Completed', 'Resolved'].includes(auction.statusLabel))
     }
 
-    if (filter === 'Expired') {
+    if (filter === 'Ended') {
       return scoped.filter((auction) => auction.isEnded && auction.statusLabel === 'Cancelled')
     }
 
@@ -47,7 +48,7 @@ export function SellerDashboard() {
     return (
       <EmptyState
         description="Connect your wallet to manage live listings and launch new auctions."
-        title="Auction management is locked"
+        title="Your selling hub is locked"
       />
     )
   }
@@ -58,59 +59,60 @@ export function SellerDashboard() {
         <div>
           <div className="mb-2 flex items-center gap-2">
             <span className="rounded border border-[rgba(173,198,255,0.2)] bg-[rgba(173,198,255,0.1)] px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--primary)]">
-              {wallet.isAdmin ? 'Admin Oversight' : 'Your Listings'}
+              {wallet.isAdmin ? 'Marketplace Team' : 'Your Listings'}
             </span>
           </div>
-          <h1 className="text-5xl font-bold tracking-[-0.02em] text-white">Auction Management</h1>
+          <h1 className="text-5xl font-bold tracking-[-0.02em] text-white">Selling hub</h1>
           <p className="mt-2 text-lg text-[var(--text-muted)]">
-            Track the auctions you have created, their escrow status, and settlement progress.
+            Manage your listings, follow bidding activity, and see which payments still need buyer
+            confirmation.
           </p>
         </div>
         <Link
           className="group inline-flex items-center gap-3 rounded-2xl bg-[var(--primary)] px-8 py-4 font-bold text-[var(--on-primary)] shadow-lg transition-all hover:shadow-[0_12px_30px_rgba(173,198,255,0.2)] active:scale-95"
           to="/create"
         >
-          <span>Create New Auction</span>
+          <span>Create Auction</span>
         </Link>
       </div>
 
       <section className="grid gap-4 md:grid-cols-3">
-        <div className="glass-panel rounded-2xl border-l-4 border-l-[var(--secondary)] p-6">
+        <Card tone="secondary">
           <div className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--text-muted)]">
-            Total Sales Revenue
+            Seller Earnings
           </div>
           <div className="mt-4 flex items-baseline gap-2">
             <span className="mono text-4xl font-semibold text-white">
               {formatToken(totalSalesRevenue)}
             </span>
           </div>
-        </div>
-        <div className="glass-panel rounded-2xl border-l-4 border-l-[var(--primary)] p-6">
+        </Card>
+        <Card tone="primary">
           <div className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--text-muted)]">
-            Active Auctions
+            Open Auctions
           </div>
           <div className="mt-4 flex items-baseline gap-2">
             <span className="mono text-4xl font-semibold text-white">{activeCount}</span>
             <span className="text-sm font-semibold text-[var(--primary)]">Live Now</span>
           </div>
-        </div>
-        <div className="glass-panel relative overflow-hidden rounded-2xl border-l-4 border-l-[var(--tertiary)] p-6">
+        </Card>
+        <Card tone="tertiary" className="relative overflow-hidden">
           <div className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--text-muted)]">
-            Pending Payouts
+            Payments Awaiting Release
           </div>
           <div className="mt-4 flex items-baseline gap-2">
             <span className="mono text-4xl font-semibold text-[var(--tertiary)]">
               {formatToken(pendingPayouts)}
             </span>
-            <span className="text-sm italic text-[var(--text-muted)]">(Escrowed)</span>
+            <span className="text-sm italic text-[var(--text-muted)]">(Protected)</span>
           </div>
-        </div>
+        </Card>
       </section>
 
-      <section className="glass-panel overflow-hidden rounded-2xl border border-[rgba(66,71,84,0.1)] shadow-2xl">
+      <Card tone="primary" className="overflow-hidden p-0">
         <div className="flex flex-col items-start justify-between gap-4 border-b border-[rgba(66,71,84,0.1)] p-6 sm:flex-row sm:items-center">
           <div className="flex items-center gap-3">
-            <h2 className="text-2xl font-semibold text-white">Your Active Listings</h2>
+            <h2 className="text-2xl font-semibold text-white">Your listings</h2>
           </div>
           <div className="flex items-center gap-2 rounded-lg bg-[var(--surface-container-low)] p-1">
             {FILTERS.map((item) => (
@@ -131,11 +133,11 @@ export function SellerDashboard() {
         </div>
 
         {isLoading ? (
-          <Loader label="Loading seller auctions..." />
+          <Loader label="Loading your listings..." />
         ) : visibleAuctions.length === 0 ? (
           <div className="p-6">
             <EmptyState
-              description="Create an auction to start managing live listings here."
+              description="Ready to sell something? Create an auction and manage it here."
               title="No listings match this filter"
             />
           </div>
@@ -144,10 +146,10 @@ export function SellerDashboard() {
             <table className="w-full text-left">
               <thead className="border-b border-[rgba(66,71,84,0.1)] bg-[rgba(19,27,46,0.5)] text-xs font-semibold uppercase tracking-[0.16em] text-[var(--text-muted)]">
                 <tr>
-                  <th className="px-6 py-4">Item Details</th>
+                  <th className="px-6 py-4">Item</th>
                   <th className="px-6 py-4">Status</th>
                   <th className="px-6 py-4">Highest Bid</th>
-                  <th className="px-6 py-4">Winner / Metadata</th>
+                  <th className="px-6 py-4">Buyer / Listing</th>
                   <th className="px-6 py-4 text-right">Actions</th>
                 </tr>
               </thead>
@@ -180,7 +182,7 @@ export function SellerDashboard() {
                     <td className="px-6 py-6">
                       <div className="flex flex-col gap-1">
                         <span className="mono text-xs text-white">
-                          {auction.winner ? formatAddress(auction.winner) : 'No winner yet'}
+                          {auction.winner ? formatAddress(auction.winner) : 'No buyer yet'}
                         </span>
                         <a
                           className="flex items-center gap-1 text-xs text-[var(--text-faint)] underline underline-offset-4"
@@ -188,7 +190,7 @@ export function SellerDashboard() {
                           rel="noreferrer"
                           target="_blank"
                         >
-                          Metadata URI
+                          Listing photo
                         </a>
                       </div>
                     </td>
@@ -201,8 +203,8 @@ export function SellerDashboard() {
                               .execute(
                                 () => auctionContract.cancelAuction(wallet.address!, auction.auction_id),
                                 {
-                                  pending: 'Cancelling auction...',
-                                  success: 'Auction cancelled.',
+                                  pending: 'Canceling your auction...',
+                                  success: 'Your auction has been canceled.',
                                 },
                               )
                               .then(refresh)
@@ -216,7 +218,7 @@ export function SellerDashboard() {
                           className="inline-flex rounded-xl bg-[var(--secondary)] px-5 py-2.5 text-xs font-bold text-[var(--on-secondary)] transition-all active:scale-95"
                           to={`/auction/${auction.auction_id.toString()}`}
                         >
-                          View Auction
+                          View Details
                         </Link>
                       )}
                     </td>
@@ -226,7 +228,7 @@ export function SellerDashboard() {
             </table>
           </div>
         )}
-      </section>
+      </Card>
     </div>
   )
 }

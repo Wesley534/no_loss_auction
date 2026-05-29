@@ -10,7 +10,7 @@ import { Input } from '../shared/Input'
 const depositSchema = z.object({
   amount: z
     .string()
-    .min(1, 'Enter an amount to simulate')
+    .min(1, 'Enter an amount to add')
     .refine((value) => {
       try {
         return parseToken(value) <= CLAIM_AMOUNT
@@ -48,19 +48,19 @@ export function ClaimTokensButton({
     >
       <div className="flex items-center gap-2 text-sm font-semibold text-white">
         <Gift className="h-4 w-4 text-[var(--primary)]" />
-        Simulate Fiat Deposit
+        Add Test Funds
       </div>
       <Input
         disabled={disabled || isLoading}
         error={form.formState.errors.amount?.message}
         hint={`No minimum. Maximum ${formatToken(CLAIM_AMOUNT)}.`}
-        label="Deposit amount"
+        label="Amount to add"
         placeholder="e.g. 125.50"
         {...form.register('amount')}
       />
       <p className="text-xs leading-6 text-[var(--text-faint)]">
-        Current MVP note: the deployed test contract credits the one-time 1,000 mUSDC cap on the
-        first successful deposit request.
+        This demo uses test funds. Your first successful request adds up to 1,000 mUSDC for
+        exploring the marketplace.
       </p>
       <Button
         disabled={disabled}
@@ -68,7 +68,7 @@ export function ClaimTokensButton({
         isLoading={isLoading}
         type="submit"
       >
-        Submit Deposit Request
+        Add Funds
       </Button>
     </form>
   )

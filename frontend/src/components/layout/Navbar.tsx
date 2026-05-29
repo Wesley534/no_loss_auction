@@ -55,7 +55,7 @@ export function Navbar() {
     <header className="fixed top-0 left-0 z-50 flex h-16 w-full items-center justify-between border-b border-[rgba(66,71,84,0.1)] bg-[rgba(11,19,38,0.8)] px-4 shadow-sm backdrop-blur-xl md:px-12">
       <div className="flex items-center gap-6 lg:gap-10">
         <Link className="font-bold text-[var(--primary)] md:text-2xl" to="/">
-          No-Loss Yield
+          Harbor Auctions
         </Link>
         <nav className="hidden items-center gap-6 lg:flex">
           {NAV_ITEMS.map((item) => {
@@ -83,7 +83,7 @@ export function Navbar() {
           to="/create"
         >
           <Rocket className="h-4 w-4" />
-          Launch Auction
+          Sell an Item
         </Link>
         <div className="hidden rounded-lg border border-[rgba(66,71,84,0.2)] bg-[var(--surface-container-high)] px-4 py-2 text-xs font-semibold text-[var(--text-muted)] sm:block">
           {wallet.isConnected ? formatToken(token.balance) : '0.00 mUSDC'}

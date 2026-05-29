@@ -75,7 +75,7 @@ export function WalletProvider({ children }: PropsWithChildren) {
 
     if (!installed) {
       console.debug('[wallet][refresh:not-installed]')
-      setNetworkLabel('Freighter not installed')
+      setNetworkLabel('Wallet not installed')
       setIsCorrectNetwork(true)
       if (!restoreSession) {
         setError(null)
@@ -99,7 +99,7 @@ export function WalletProvider({ children }: PropsWithChildren) {
     setNetworkLabel(network.network || 'Stellar Testnet')
     setIsCorrectNetwork(isSupportedNetwork(network.networkPassphrase))
     if (!isSupportedNetwork(network.networkPassphrase)) {
-      setError('Freighter is connected to the wrong network. Switch it to Stellar Testnet.')
+      setError('Your wallet is on the wrong network. Switch it to Stellar Testnet.')
     }
 
     if (!restoreSession) {
@@ -172,7 +172,7 @@ export function WalletProvider({ children }: PropsWithChildren) {
       console.debug('[wallet][connect:connection]', connection)
       if (connection.error || !connection.isConnected) {
         throw new Error(
-          'Freighter is not available. Install Freighter, unlock it, and try again.',
+          'Your wallet is not available. Install Freighter, unlock it, and try again.',
         )
       }
 
@@ -183,7 +183,7 @@ export function WalletProvider({ children }: PropsWithChildren) {
       }
 
       if (!response.address) {
-        throw new Error('Freighter did not return a wallet address. Unlock the wallet and try again.')
+        throw new Error('Your wallet did not return an address. Unlock it and try again.')
       }
 
       persistSession(true)

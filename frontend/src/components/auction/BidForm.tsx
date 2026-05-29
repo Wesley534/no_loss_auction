@@ -30,12 +30,12 @@ export function BidForm({
   })
 
   return (
-    <Card className="space-y-4">
+    <Card className="space-y-4" tone="secondary">
       <div>
         <h3 className="text-xl font-semibold text-white">Place a bid</h3>
         <p className="mt-1 text-sm text-[var(--text-muted)]">
-          Funds move into on-chain escrow immediately. The previous top bidder is refunded
-          automatically.
+          Your funds are protected until the auction ends. If someone outbids you, your previous
+          bid is returned automatically.
         </p>
       </div>
       <form className="space-y-4" onSubmit={submit}>
@@ -46,7 +46,7 @@ export function BidForm({
           {...form.register('amount')}
         />
         <Button fullWidth isLoading={isLoading} type="submit">
-          Submit bid
+          Place Bid
         </Button>
       </form>
     </Card>

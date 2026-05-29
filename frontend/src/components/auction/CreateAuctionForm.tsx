@@ -52,19 +52,20 @@ export function CreateAuctionForm({
   })
 
   return (
-    <Card className="space-y-6">
+    <Card className="space-y-6" tone="primary">
       <div>
-        <h1 className="text-3xl font-semibold text-white">Launch a new auction</h1>
+        <h1 className="text-3xl font-semibold text-white">Create an auction</h1>
         <p className="mt-2 max-w-2xl text-sm text-[var(--text-muted)]">
-          Upload an item image, set the opening bid, and choose how long bidding stays open.
-          The auction APR is configured by admin at {DEFAULT_APR_BPS / 100}% APR.
+          Add a photo, write a clear description, choose your starting price, and decide how long
+          buyers can bid. The marketplace currently applies a {DEFAULT_APR_BPS / 100}% seller
+          earnings rate in this demo.
         </p>
       </div>
       <form
         className="grid gap-5 md:grid-cols-2"
         onSubmit={form.handleSubmit(async (values) => {
           if (!imageFile) {
-            setImageError('Upload a product image before creating the auction.')
+            setImageError('Upload an item photo before creating the auction.')
             return
           }
 
@@ -92,11 +93,11 @@ export function CreateAuctionForm({
       >
         <Input
           error={form.formState.errors.title?.message}
-          label="Title"
+          label="Item title"
           {...form.register('title')}
         />
         <label className="flex flex-col gap-2">
-          <span className="text-sm font-medium text-[var(--text-muted)]">Product image</span>
+          <span className="text-sm font-medium text-[var(--text-muted)]">Item photo</span>
           <input
             accept="image/*"
             className="rounded-2xl border border-dashed border-white/15 bg-white/5 px-4 py-3 text-sm text-[var(--text)]"
@@ -110,34 +111,34 @@ export function CreateAuctionForm({
           {imageError ? <span className="text-sm text-[var(--danger)]">{imageError}</span> : null}
           {!imageError ? (
             <span className="text-xs text-[var(--text-faint)]">
-              The image will be uploaded to IPFS through Pinata when you submit.
+              Your image will be uploaded securely when you publish the listing.
             </span>
           ) : null}
         </label>
         <div className="md:col-span-2">
           <Textarea
             error={form.formState.errors.description?.message}
-            label="Description"
+            label="Item description"
             {...form.register('description')}
           />
         </div>
         <Input
           error={form.formState.errors.starting_bid?.message}
-          hint="Denominated in mUSDC with 7 decimals."
-          label="Starting bid"
+          hint="Test balances are shown in mUSDC."
+          label="Starting price"
           {...form.register('starting_bid')}
         />
         <Input
           error={form.formState.errors.duration_value?.message}
-          hint="Choose a number, then pick hours, days, or weeks."
-          label="Duration"
+          hint="Choose how long you'd like the auction to stay open."
+          label="Auction length"
           type="number"
           {...form.register('duration_value')}
         />
         <SelectField
           error={form.formState.errors.duration_unit?.message}
-          hint="The frontend converts this to seconds before calling the contract."
-          label="Duration unit"
+          hint="Pick the time unit that matches your auction length."
+          label="Time unit"
           {...form.register('duration_unit')}
         >
           <option value="hours">Hours</option>
@@ -146,7 +147,7 @@ export function CreateAuctionForm({
         </SelectField>
         <div className="md:col-span-2">
           <Button fullWidth isLoading={isLoading} type="submit">
-            Create auction
+            Create Auction
           </Button>
         </div>
       </form>

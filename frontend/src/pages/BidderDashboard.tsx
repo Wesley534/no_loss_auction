@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Button } from '../components/shared/Button'
+import { Card } from '../components/shared/Card'
 import { EmptyState } from '../components/shared/EmptyState'
 import { Input } from '../components/shared/Input'
 import { Loader } from '../components/shared/Loader'
@@ -12,14 +13,14 @@ import { auctionContract } from '../lib/contract'
 import { formatAddress, formatToken } from '../lib/format'
 import { getAuctionStatusText } from '../lib/status'
 
-const FILTERS = ['All Activity', 'My Activity'] as const
+const FILTERS = ['All Bids', 'My Bids'] as const
 const PAGE_SIZE = 10
 
 export function BidderDashboard() {
   const wallet = useWallet()
   const token = useToken()
   const { auctions, isLoading } = useAuctions()
-  const [filter, setFilter] = useState<(typeof FILTERS)[number]>('All Activity')
+  const [filter, setFilter] = useState<(typeof FILTERS)[number]>('All Bids')
   const [searchInput, setSearchInput] = useState('')
   const [searchTerm, setSearchTerm] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
@@ -57,7 +58,7 @@ export function BidderDashboard() {
       ),
     [auctions, bidAuctionIds, wonAuctionIds],
   )
-  const scopedAuctions = filter === 'All Activity' ? allBidAuctions : myBidAuctions
+  const scopedAuctions = filter === 'All Bids' ? allBidAuctions : myBidAuctions
   const visibleAuctions = useMemo(() => {
     const normalized = searchTerm.trim().toLowerCase()
     if (!normalized) return scopedAuctions
@@ -98,16 +99,16 @@ export function BidderDashboard() {
   }, [currentPage, visibleAuctions])
 
   const emptyState =
-    filter === 'All Activity'
+    filter === 'All Bids'
       ? {
-          title: 'No bid activity yet',
-          description: 'Once bids are placed anywhere in the marketplace, they will appear here.',
+          title: 'No bidding activity yet',
+          description: 'Once buyers start placing bids, they will appear here.',
         }
       : {
-          title: wallet.address ? 'No activity for this wallet yet' : 'Connect wallet for personal activity',
+          title: wallet.address ? 'No bids for this wallet yet' : 'Connect your wallet to see your bids',
           description: wallet.address
-            ? 'Place or win a bid and your personal activity will appear here.'
-            : 'Connect your wallet to filter the marketplace feed down to your own activity.',
+            ? 'Place a bid or win an auction and your activity will appear here.'
+            : 'Connect your wallet to filter the marketplace feed down to your own bids.',
         }
 
   return (
@@ -116,18 +117,19 @@ export function BidderDashboard() {
         <div>
           <div className="mb-1 flex items-center gap-2">
             <span className="text-xs font-bold uppercase tracking-[0.24em] text-[var(--primary)]">
-              Marketplace Activity
+              Buying Activity
             </span>
           </div>
-          <h1 className="text-4xl font-semibold text-white">Bids & Activity</h1>
+          <h1 className="text-4xl font-semibold text-white">Bids and purchases</h1>
           <p className="text-[var(--text-muted)]">
-            Track all bid activity across the marketplace or switch to your own wallet-specific view.
+            Follow the auctions you're bidding on, the ones you've won, and any refunds or next
+            steps that matter to you.
           </p>
         </div>
-        <div className="glass-panel flex items-center gap-4 rounded-xl p-4">
+        <Card tone="primary" className="flex items-center gap-4 rounded-xl p-4">
           <div className="flex flex-col">
             <span className="text-xs uppercase tracking-[0.16em] text-[var(--text-muted)]">
-              mUSDC Balance
+              Available Balance
             </span>
             <span className="mono text-xl text-[var(--primary)]">{formatToken(token.balance)}</span>
           </div>
@@ -140,52 +142,52 @@ export function BidderDashboard() {
               {formatAddress(wallet.address)}
             </span>
           </div>
-        </div>
+        </Card>
       </header>
 
       <section className="mb-8 grid gap-4 md:grid-cols-3">
-        <div className="glass-panel rounded-xl p-4">
+        <Card tone="primary" className="rounded-xl p-4">
           <div className="mb-2 flex items-center justify-between">
-            <span className="text-xs text-[var(--text-muted)]">Bids in Escrow</span>
+            <span className="text-xs text-[var(--text-muted)]">Protected Bids</span>
           </div>
           <div className="mono text-2xl text-white">{formatToken(bidsInEscrow)}</div>
           <div className="mt-2 text-[10px] text-[var(--text-muted)]">
-            {activeBids.length} Active For You
+            {activeBids.length} Open For You
           </div>
-        </div>
-        <div className="glass-panel rounded-xl p-4">
+        </Card>
+        <Card tone="secondary" className="rounded-xl p-4">
           <div className="mb-2 flex items-center justify-between">
             <span className="text-xs text-[var(--text-muted)]">Refunds Received</span>
           </div>
           <div className="mono text-2xl text-white">{formatToken(refundsReceived)}</div>
           <div className="mt-2 text-[10px] text-[var(--text-muted)]">
-            Automatic refunds from outbid auctions
+            Returned automatically when you are outbid
           </div>
-        </div>
-        <div className="glass-panel rounded-xl p-4">
+        </Card>
+        <Card tone="tertiary" className="rounded-xl p-4">
           <div className="mb-2 flex items-center justify-between">
             <span className="text-xs text-[var(--text-muted)]">Auctions Won</span>
           </div>
           <div className="mono text-2xl text-white">{wonAuctions.length}</div>
           <div className="mt-2 text-[10px] text-[var(--text-muted)]">
-            Total Volume: {formatToken(wonAuctions.reduce((sum, auction) => sum + auction.highest_bid, 0n))}
+            Total spent: {formatToken(wonAuctions.reduce((sum, auction) => sum + auction.highest_bid, 0n))}
           </div>
-        </div>
+        </Card>
       </section>
 
       <section className="space-y-4">
         <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
           <div>
-            <h2 className="text-2xl font-semibold text-white">Live Activity Feed</h2>
+            <h2 className="text-2xl font-semibold text-white">Auction activity</h2>
             <p className="text-sm text-[var(--text-muted)]">
-              {filter === 'All Activity'
+              {filter === 'All Bids'
                 ? 'Showing every auction that has received at least one bid.'
                 : 'Showing auctions you have bid on or won.'}
             </p>
           </div>
           <div className="flex items-center gap-2 rounded-lg bg-[var(--surface-container-low)] p-1">
             {FILTERS.map((item) => {
-              const disabled = item === 'My Activity' && !wallet.address
+              const disabled = item === 'My Bids' && !wallet.address
               return (
                 <button
                   className={
@@ -208,9 +210,9 @@ export function BidderDashboard() {
         <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_auto]">
           <Input
             className="w-full"
-            label="Search activity"
+            label="Search auctions"
             onChange={(event) => setSearchInput(event.target.value)}
-            placeholder="Search by title, product ID, seller, bidder, or status"
+            placeholder="Search by title, item reference, seller, bidder, or status"
             value={searchInput}
           />
           <div className="flex items-end">
@@ -227,18 +229,18 @@ export function BidderDashboard() {
         </div>
 
         {isLoading ? (
-          <Loader label="Loading activity feed..." />
+          <Loader label="Loading auction activity..." />
         ) : visibleAuctions.length === 0 ? (
           <EmptyState description={emptyState.description} title={emptyState.title} />
         ) : (
-          <div className="glass-panel overflow-hidden rounded-2xl border border-[rgba(66,71,84,0.1)] shadow-2xl">
+          <Card tone="primary" className="overflow-hidden rounded-2xl p-0">
             <div className="overflow-x-auto">
               <table className="w-full min-w-[980px] table-fixed text-left">
                 <thead className="border-b border-[rgba(66,71,84,0.1)] bg-[rgba(19,27,46,0.5)] text-xs font-semibold uppercase tracking-[0.16em] text-[var(--text-muted)]">
                   <tr>
                     <th className="w-[23%] px-6 py-4">Auction</th>
                     <th className="w-[13%] px-6 py-4">Seller</th>
-                    <th className="w-[14%] px-6 py-4">Highest Bidder</th>
+                    <th className="w-[14%] px-6 py-4">Current Leader</th>
                     <th className="w-[12%] px-6 py-4">Current Bid</th>
                     <th className="w-[14%] px-6 py-4">Status</th>
                     <th className="w-[16%] px-6 py-4">Tags</th>
@@ -289,12 +291,12 @@ export function BidderDashboard() {
                             ) : null}
                             {isWalletLeader ? (
                               <span className="inline-flex max-w-full items-center rounded-full border border-[rgba(78,222,163,0.2)] bg-[rgba(78,222,163,0.1)] px-3 py-1 text-[11px] font-semibold leading-5 text-[var(--secondary)]">
-                                Highest Bidder
+                                Leading Bid
                               </span>
                             ) : null}
                             {isMine ? (
                               <span className="inline-flex max-w-full items-center rounded-full border border-[rgba(173,198,255,0.2)] bg-[rgba(173,198,255,0.1)] px-3 py-1 text-[11px] font-semibold leading-5 text-[var(--primary)]">
-                                My Activity
+                                My Bids
                               </span>
                             ) : null}
                           </div>
@@ -304,7 +306,7 @@ export function BidderDashboard() {
                             className="inline-flex min-w-[112px] items-center justify-center rounded-xl border border-[var(--primary)] px-4 py-2.5 text-xs font-semibold whitespace-nowrap text-[var(--primary)] transition-colors hover:bg-[rgba(173,198,255,0.05)]"
                             to={`/auction/${auction.auction_id.toString()}`}
                           >
-                            View Auction
+                            View Details
                           </Link>
                         </td>
                       </tr>
@@ -341,21 +343,22 @@ export function BidderDashboard() {
                 </Button>
               </div>
             </div>
-          </div>
+          </Card>
         )}
       </section>
 
       <section>
         <div className="mb-4 flex items-center gap-2">
-          <h2 className="text-2xl font-semibold text-white">Auctions Won</h2>
+          <h2 className="text-2xl font-semibold text-white">Auctions you won</h2>
           <span className="rounded bg-[rgba(255,185,95,0.1)] px-2 py-0.5 text-xs text-[var(--tertiary)]">
-            Pending Delivery
+            Buyer actions
           </span>
         </div>
         <div className="space-y-4">
           {wonAuctions.map((auction) => (
-            <div
-              className="glass-panel flex flex-col items-center gap-6 rounded-xl p-6 lg:flex-row"
+            <Card
+              className="flex flex-col items-center gap-6 rounded-xl p-6 lg:flex-row"
+              tone="secondary"
               key={auction.auction_id.toString()}
             >
               <div className="w-full lg:w-1/4">
@@ -368,8 +371,8 @@ export function BidderDashboard() {
                   <div className="absolute inset-0 bg-gradient-to-tr from-[rgba(8,13,28,0.5)] via-transparent to-transparent" />
                   <div className="absolute bottom-2 left-2 text-[10px] font-bold uppercase text-white">
                     {auction.statusLabel === 'Resolved' || auction.statusLabel === 'Completed'
-                      ? 'Settled'
-                      : 'Pending delivery'}
+                      ? 'Completed'
+                      : 'Awaiting confirmation'}
                   </div>
                 </div>
               </div>
@@ -381,8 +384,8 @@ export function BidderDashboard() {
                   </span>
                 </div>
                 <p className="mb-4 max-w-2xl text-[var(--text-muted)]">
-                  Escrow for {formatToken(auction.highest_bid)} is currently locked. Confirm
-                  once the seller fulfills delivery, or raise a dispute if something went wrong.
+                  Your payment of {formatToken(auction.highest_bid)} is protected until you confirm
+                  the item arrived as expected, or report an issue if something went wrong.
                 </p>
                 <div className="flex flex-wrap gap-4 text-xs uppercase text-[var(--text-muted)]">
                   <span>Seller: {formatAddress(auction.seller)}</span>
@@ -401,28 +404,28 @@ export function BidderDashboard() {
                     className="w-full rounded-lg border border-[var(--danger)] py-3 text-center text-sm font-bold text-[var(--danger)] transition-all hover:bg-[rgba(255,138,128,0.05)] active:scale-95"
                     to={`/auction/${auction.auction_id.toString()}`}
                   >
-                    Raise Dispute
+                    Report an Issue
                   </Link>
                 </div>
               ) : (
                 <div className="flex w-full min-w-[200px] flex-col gap-3 rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-[var(--text-muted)] lg:w-auto">
                   <div>
-                    This auction is already settled, so delivery confirmation and dispute actions
-                    are unavailable.
+                    This order is already complete, so buyer confirmation and issue reporting are
+                    no longer available.
                   </div>
                   <Link
                     className="inline-flex justify-center rounded-lg bg-[var(--secondary)] py-3 text-center text-sm font-bold text-[var(--on-secondary)] transition-all active:scale-95"
                     to={`/auction/${auction.auction_id.toString()}`}
                   >
-                    View Auction
+                    View Details
                   </Link>
                 </div>
               )}
-            </div>
+            </Card>
           ))}
           {!isLoading && wonAuctions.length === 0 ? (
             <EmptyState
-              description="When you win an auction, confirmation and dispute tools will appear here."
+              description="When you win an auction, delivery confirmation and issue reporting will appear here."
               title="No won auctions yet"
             />
           ) : null}

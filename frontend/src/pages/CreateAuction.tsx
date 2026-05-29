@@ -47,8 +47,8 @@ export function CreateAuctionPage() {
         })
       },
       {
-        pending: 'Uploading image and creating auction...',
-        success: (tx) => `Auction #${tx.value.toString()} created.`,
+        pending: 'Publishing your listing...',
+        success: (tx) => `Auction #${tx.value.toString()} is live.`,
       },
     )
 

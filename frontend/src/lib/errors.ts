@@ -1,27 +1,27 @@
 const CONTRACT_ERROR_MAP: Record<string, string> = {
-  AlreadyInitialized: 'This contract has already been initialized.',
-  AlreadyClaimed: 'You have already simulated the maximum fiat deposit of 1,000 mUSDC.',
-  InsufficientBalance: 'You do not have enough mUSDC.',
-  AuctionNotDisputed: 'This auction is not currently in dispute.',
+  AlreadyInitialized: 'This marketplace has already been set up.',
+  AlreadyClaimed: 'You have already added the maximum test balance of 1,000 mUSDC.',
+  InsufficientBalance: 'You do not have enough funds available.',
+  AuctionNotDisputed: 'There is no open issue on this auction.',
   BidTooLow: 'Your bid must be higher than the current highest bid.',
   SellerCannotBidOwnAuction: 'You cannot bid on your own auction.',
-  AuctionNotActive: 'This auction is not active.',
-  AuctionNotYetEnded: 'This auction has not ended yet.',
-  Unauthorized: 'You are not authorized to perform this action.',
-  InsufficientEscrowBalance: 'The auction escrow balance is too low to complete this payout.',
-  InsufficientYieldReserve: 'The protocol yield reserve is too low.',
+  AuctionNotActive: 'This auction is not open for bids right now.',
+  AuctionNotYetEnded: 'This auction is still in progress.',
+  Unauthorized: 'You do not have permission to do that.',
+  InsufficientEscrowBalance: 'The protected payment balance is too low to complete this payout.',
+  InsufficientYieldReserve: 'The marketplace reserve is too low for this action.',
   InvalidSplitAmounts: 'Split amounts must equal the winning bid.',
-  AlreadyPaidOut: 'This auction has already been paid out.',
+  AlreadyPaidOut: 'Payment for this auction has already been released.',
   AuctionAlreadyEnded: 'This auction has already ended.',
-  CannotCancelWithBids: 'You cannot cancel an auction after bids have been placed.',
-  NoBids: 'This auction has no bids yet.',
+  CannotCancelWithBids: 'You cannot cancel an auction after bidding has started.',
+  NoBids: 'No bids have been placed yet.',
   InvalidAmount: 'Please enter a valid positive amount.',
   InvalidInput: 'Some of the information provided is invalid. Review the form and try again.',
-  InvalidLedgerTime: 'The ledger timestamp is invalid. Please retry in a moment.',
-  MathOverflow: 'This operation exceeded the contract math limits. Try a smaller value.',
-  NotInitialized: 'The contract is not initialized on this network.',
+  InvalidLedgerTime: 'The request could not be completed right now. Please try again in a moment.',
+  MathOverflow: 'That amount is too large to process. Try a smaller value.',
+  NotInitialized: 'This marketplace is not available on the current network.',
   AuctionNotFound: 'This auction could not be found.',
-  InsufficientAllowance: 'The approved allowance is too low for this action.',
+  InsufficientAllowance: 'Your wallet approval is too low for this action.',
 }
 
 const CONTRACT_ERROR_CODE_MAP: Record<number, string> = {
@@ -100,7 +100,7 @@ function normalizeErrorMessage(message: string) {
     message.includes('UserRejected') ||
     message.includes('rejected by the user')
   ) {
-    return 'The transaction was rejected in Freighter.'
+    return 'The action was canceled in your wallet.'
   }
 
   if (
@@ -108,23 +108,23 @@ function normalizeErrorMessage(message: string) {
     message.includes('extension not found') ||
     message.includes('window.freighter')
   ) {
-    return 'Freighter is not installed. Install the extension and reload the app.'
+    return 'Freighter is not installed. Install the wallet extension and reload the app.'
   }
 
   if (message.includes('did not return a wallet address')) {
-    return 'Freighter is locked or unavailable. Unlock the wallet and try again.'
+    return 'Your wallet is locked or unavailable. Unlock it and try again.'
   }
 
   if (message.includes('wrong network') || message.includes('network passphrase')) {
-    return 'Freighter is connected to the wrong network. Switch to Stellar Testnet and try again.'
+    return 'Your wallet is connected to the wrong network. Switch to Stellar Testnet and try again.'
   }
 
   if (message.includes('Pinata credentials are missing')) {
-    return 'Image upload is not configured. Add your Pinata environment variables and restart the app.'
+    return 'Image upload is not configured yet. Add the Pinata settings and restart the app.'
   }
 
   if (message.includes('Pinata upload failed')) {
-    return 'Image upload to IPFS failed. Please try again in a moment.'
+    return 'Image upload failed. Please try again in a moment.'
   }
 
   if (
@@ -143,7 +143,7 @@ function normalizeErrorMessage(message: string) {
     return message
   }
 
-  return message || 'Something went wrong while talking to Stellar.'
+  return message || 'Something went wrong while processing your request.'
 }
 
 export function getErrorMessage(error: unknown) {

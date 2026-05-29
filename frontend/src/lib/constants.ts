@@ -25,15 +25,15 @@ export const WALLET_SESSION_KEY = 'nly-wallet-session'
 
 export const NAV_ITEMS = [
   { label: 'Marketplace', href: '/' },
-  { label: 'Auctions', href: '/auctions' },
-  { label: 'Activity', href: '/activity' },
-  { label: 'Dashboard', href: '/dashboard' },
+  { label: 'Sell', href: '/auctions' },
+  { label: 'Buying Activity', href: '/activity' },
+  { label: 'My Account', href: '/dashboard' },
 ] as const
 
 export const DISPUTE_DECISIONS = [
-  { label: 'Release To Seller', value: 'ReleaseToSeller' },
+  { label: 'Pay Seller', value: 'ReleaseToSeller' },
   { label: 'Refund Buyer', value: 'RefundBuyer' },
-  { label: 'Split', value: 'Split' },
+  { label: 'Split Payment', value: 'Split' },
 ] as const
 
 export const AUCTION_STATUS_ORDER = [

@@ -1,5 +1,6 @@
 import { LayoutDashboard, PlusCircle, Shield, ShoppingBag, Trophy } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
+import { Card } from '../shared/Card'
 import { NAV_ITEMS } from '../../lib/constants'
 
 const ICONS = [ShoppingBag, PlusCircle, LayoutDashboard, Trophy, Shield]
@@ -30,11 +31,11 @@ export function Sidebar({
         <div className="mt-20 flex h-full flex-col">
           <div className="mb-8 px-2">
             <div className="mb-2 text-xs uppercase tracking-[0.28em] text-[var(--primary)]">
-              Protocol View
+              Marketplace Menu
             </div>
-            <h2 className="text-2xl font-semibold text-white">Yield Auction Console</h2>
+            <h2 className="text-2xl font-semibold text-white">Harbor Auctions</h2>
             <p className="mt-2 text-sm text-[var(--text-muted)]">
-              Marketplace, seller operations, bidder actions, and admin dispute controls.
+              Browse listings, manage sales, follow bids, and handle buyer issues in one place.
             </p>
           </div>
 
@@ -61,10 +62,10 @@ export function Sidebar({
           </div>
 
           <div className="mt-auto">
-            <div className="glass-panel rounded-[26px] p-5">
-              <div className="mb-2 text-sm font-semibold text-white">Launch a new auction</div>
+            <Card tone="secondary" className="rounded-[26px] p-5">
+              <div className="mb-2 text-sm font-semibold text-white">Ready to sell something?</div>
               <p className="mb-4 text-sm text-[var(--text-muted)]">
-                Mint test mUSDC, list an item, and start earning simulated yield on escrow.
+                Create a listing, add a photo, and start accepting bids in minutes.
               </p>
               <Link
                 className="inline-flex w-full items-center justify-center rounded-2xl bg-[var(--primary)] px-4 py-3 text-sm font-semibold text-slate-950 transition hover:brightness-110"
@@ -72,7 +73,7 @@ export function Sidebar({
               >
                 Create Auction
               </Link>
-            </div>
+            </Card>
           </div>
         </div>
       </aside>

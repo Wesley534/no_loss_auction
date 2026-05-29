@@ -1,6 +1,7 @@
 import { X } from 'lucide-react'
 import type { PropsWithChildren } from 'react'
 import { Button } from './Button'
+import { Card } from './Card'
 
 type ModalProps = PropsWithChildren<{
   open: boolean
@@ -14,7 +15,7 @@ export function Modal({ open, title, description, onClose, children }: ModalProp
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/75 px-4 backdrop-blur-md">
-      <div className="glass-panel w-full max-w-2xl rounded-[30px] p-6">
+      <Card tone="primary" className="w-full max-w-2xl rounded-[30px] p-6">
         <div className="mb-6 flex items-start justify-between gap-4">
           <div>
             <h3 className="text-2xl font-semibold text-white">{title}</h3>
@@ -27,7 +28,7 @@ export function Modal({ open, title, description, onClose, children }: ModalProp
           </Button>
         </div>
         {children}
-      </div>
+      </Card>
     </div>
   )
 }

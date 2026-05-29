@@ -20,25 +20,32 @@ export function getAuctionStatusText(
   const winner = auction.winner ?? auction.highest_bidder ?? null
   const isWinner = Boolean(viewerAddress && winner && viewerAddress === winner)
 
+  if (status === 'Active') {
+    return 'Open for Bids'
+  }
+
   if (status === 'AwaitingConfirmation') {
-    if (perspective === 'seller') return 'Awaiting Bidder Confirmation'
-    if (perspective === 'admin') return 'Awaiting Bidder Confirmation'
+    if (perspective === 'seller') return 'Awaiting Buyer Confirmation'
+    if (perspective === 'admin') return 'Buyer Confirmation Needed'
     if (perspective === 'bidder' && isWinner) return 'You Won'
-    return 'Awaiting Confirmation'
+    return 'Awaiting Delivery Confirmation'
   }
 
   if (status === 'Completed') {
-    return 'Complete'
+    return 'Completed'
   }
 
   if (status === 'Resolved') {
-    return perspective === 'admin' ? 'Dispute Resolved' : 'Resolved'
+    return perspective === 'admin' ? 'Issue Resolved' : 'Resolved'
   }
 
   if (status === 'Disputed') {
-    return perspective === 'admin' ? 'Dispute Open' : 'Disputed'
+    return perspective === 'admin' ? 'Needs Review' : 'Issue Reported'
+  }
+
+  if (status === 'Cancelled') {
+    return 'Cancelled'
   }
 
   return status
 }
-

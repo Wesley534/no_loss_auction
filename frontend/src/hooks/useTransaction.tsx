@@ -38,7 +38,7 @@ export function useTransaction() {
               rel="noreferrer"
               target="_blank"
             >
-              View transaction
+              View receipt
             </a>
           ) : undefined,
         },

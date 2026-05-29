@@ -4,9 +4,7 @@ import { AuctionGrid } from '../components/auction/AuctionGrid'
 import { Button } from '../components/shared/Button'
 import { Card } from '../components/shared/Card'
 import { Loader } from '../components/shared/Loader'
-import { TokenBalanceCard } from '../components/token/TokenBalanceCard'
 import { useAuctions } from '../hooks/useAuctions'
-import { useToken } from '../hooks/useToken'
 import { useTransaction } from '../hooks/useTransaction'
 import { useWallet } from '../hooks/useWallet'
 import { FREIGHTER_INSTALL_URL, STELLAR_FRIENDBOT_URL } from '../lib/constants'
@@ -16,7 +14,6 @@ import { formatNumber } from '../lib/format'
 export function Home() {
   const { auctions, isLoading, refresh } = useAuctions()
   const wallet = useWallet()
-  const token = useToken()
   const transaction = useTransaction()
 
   const openAuctions = auctions.filter((auction) => auction.statusLabel === 'Active')
@@ -43,8 +40,6 @@ export function Home() {
           'Test funds added. You can now browse, bid, and create listings in the demo marketplace.',
       },
     )
-
-    await token.refresh()
   }
 
   return (
@@ -253,76 +248,6 @@ export function Home() {
             emptyDescription="Once active listings are live, the auctions closest to closing will appear here."
             emptyTitle="No ending-soon auctions yet"
           />
-        )}
-      </section>
-
-      <section className="grid gap-4 xl:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
-        <Card className="space-y-4 rounded-[30px] p-5" tone="neutral">
-          <div>
-            <div className="text-xs uppercase tracking-[0.24em] text-[var(--text-faint)]">
-              Marketplace Statistics
-            </div>
-            <h2 className="mt-1 text-2xl font-semibold text-white">Marketplace at a glance</h2>
-          </div>
-
-          <div className="grid gap-3 sm:grid-cols-3">
-            {[
-              {
-                label: 'Live Listings',
-                value: formatNumber(openAuctions.length),
-                tone: 'bg-[rgba(173,198,255,0.08)] ring-[rgba(173,198,255,0.14)]',
-              },
-              {
-                label: 'Bidders in Action',
-                value: formatNumber(activeBidderCount),
-                tone: 'bg-[rgba(78,222,163,0.08)] ring-[rgba(78,222,163,0.14)]',
-              },
-              {
-                label: 'Completed Sales',
-                value: formatNumber(completedAuctions.length),
-                tone: 'bg-[rgba(255,185,95,0.08)] ring-[rgba(255,185,95,0.14)]',
-              },
-            ].map((item) => (
-              <div className={`rounded-[24px] p-4 ring-1 ${item.tone}`} key={item.label}>
-                <div className="text-[11px] uppercase tracking-[0.2em] text-[var(--text-faint)]">
-                  {item.label}
-                </div>
-                <div className="mono mt-3 text-2xl font-semibold text-white">{item.value}</div>
-              </div>
-            ))}
-          </div>
-        </Card>
-
-        {wallet.address ? (
-          <TokenBalanceCard balance={token.balance} />
-        ) : (
-          <Card className="space-y-3 rounded-[30px] p-5" tone="primary">
-            <div className="text-xs uppercase tracking-[0.24em] text-[var(--text-faint)]">
-              Ready to bid?
-            </div>
-            <h2 className="text-2xl font-semibold text-white">Connect and start exploring</h2>
-            <p className="text-sm leading-6 text-[var(--text-muted)]">
-              Install Freighter, switch to Stellar Testnet, and claim test funds to start bidding.
-            </p>
-            <div className="flex flex-wrap gap-3">
-              <a
-                className="inline-flex items-center rounded-xl bg-[var(--primary)] px-4 py-2 text-sm font-semibold text-[var(--on-primary)]"
-                href={FREIGHTER_INSTALL_URL}
-                rel="noreferrer"
-                target="_blank"
-              >
-                Install Wallet
-              </a>
-              <a
-                className="inline-flex items-center rounded-xl border border-white/15 px-4 py-2 text-sm font-semibold text-white"
-                href={STELLAR_FRIENDBOT_URL}
-                rel="noreferrer"
-                target="_blank"
-              >
-                Add Test Funds
-              </a>
-            </div>
-          </Card>
         )}
       </section>
 
